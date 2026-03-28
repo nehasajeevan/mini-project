@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>College Event Registration</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="event.css">
+    <style>
+        body {
+            background-color: rgb(211, 199, 201);
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">EVENT</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup"
+                aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav">
+                    <a class="nav-link" href="#">Home</a>
+                    <a class="nav-link" href="#">Features</a>
+                    <a class="nav-link" href="#">college</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+
+                <div class="card shadow">
+                    <h3 class="text-center mb-4">College Event Registration</h3>
+
+                    <form onsubmit="return validateForm()">
+
+                        <div class="mb-3">
+                            <label class="form-label">Student Name</label>
+                            <input type="text" class="form-control" id="name">
+                            <div id="nameError" class="error"></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email">
+                            <div id="emailError" class="error"></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Phone Number</label>
+                            <input type="text" class="form-control" id="phone">
+                            <div id="phoneError" class="error"></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Department</label>
+                            <select class="form-control" id="department">
+                                <option value="">Select Department</option>
+                                <option>Computer Science</option>
+                                <option>Commerce</option>
+                                <option>Mathematics</option>
+                                <option>English</option>
+                            </select>
+                            <div id="deptError" class="error"></div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Select Event</label>
+                            <select class="form-control" id="event">
+                                <option value="">Select Event</option>
+                                <option>Coding Competition</option>
+                                <option>Quiz Competition</option>
+                                <option>Dance Competition</option>
+                                <option>Photography Contest</option>
+                            </select>
+                            <div id="eventError" class="error"></div>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary">Register</button>
+                            <button type="reset" class="btn btn-secondary">Reset</button>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+    <script>
+        emailjs.init("zJhwOmkvZOaGeTVpR");
+
+        function validateForm() {
+            let name = document.getElementById("name").value;
+            let email = document.getElementById("email").value;
+            let phone = document.getElementById("phone").value;
+            let department = document.getElementById("department").value;
+            let event = document.getElementById("event").value;
+
+            let namePattern = /^[A-Za-z ]+$/;
+            let emailPattern = /^[^ ]+@[^ ]+\.[a-z]{2,}$/;
+            let phonePattern = /^[0-9]{10}$/;
+
+            document.getElementById("nameError").innerHTML = "";
+            document.getElementById("emailError").innerHTML = "";
+            document.getElementById("phoneError").innerHTML = "";
+            document.getElementById("deptError").innerHTML = "";
+            document.getElementById("eventError").innerHTML = "";
+
+            if (name == "" || !namePattern.test(name)) {
+                document.getElementById("nameError").innerHTML = "Valid name required";
+                return false;
+            }
+
+            if (email == "" || !emailPattern.test(email)) {
+                document.getElementById("emailError").innerHTML = "Valid email required";
+                return false;
+            }
+
+            if (phone == "" || !phonePattern.test(phone)) {
+                document.getElementById("phoneError").innerHTML = "Enter valid 10 digit number";
+                return false;
+            }
+
+            if (department == "") {
+                document.getElementById("deptError").innerHTML = "Select department";
+                return false;
+            }
+
+            if (event == "") {
+                document.getElementById("eventError").innerHTML = "Select event";
+                return false;
+            }
+
+            let studentdata = {
+                name: name,
+                email: email,
+                phone: phone,
+                department: department,
+                event: event
+            };
+            let students = JSON.parse(localStorage.getItem("students")) || [];
+            students.push(studentdata);
+            localStorage.setItem("students", JSON.stringify(students));
+
+            let templateparams = {
+                student_name: name,
+                student_email: email,
+                student_phone: phone,
+                student_department: department,
+                student_event: event
+            };
+
+            emailjs.send('service_adu7h7r', 'template_ru4haou', templateparams).then(
+                (response) => {
+                    window.location.href = "landing.html";
+                },
+                (error) => {
+                    alert("registration failed.please try again.");
+                    console.log("failed...", error);
+                }
+            )
+            return false;
+        }
+    </script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+
+</body>
+
+</html>
